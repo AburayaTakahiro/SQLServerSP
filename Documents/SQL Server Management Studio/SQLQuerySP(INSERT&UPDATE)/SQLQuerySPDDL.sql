@@ -4,7 +4,9 @@ CREATE TABLE users (
 	LoginId VARCHAR(50) NULL,
 	Name VARCHAR(50) NULL,
 	Birthday DATE NULL,
-	Gender CHAR(1) NULL
+	Gender CHAR(1) NULL,
+	CreatedDate DATETIME DEFAULT GETDATE(),
+	UpdatedDate DATETIME 
 );
 
 --ÉfÅ[É^ÇÃë}ì¸

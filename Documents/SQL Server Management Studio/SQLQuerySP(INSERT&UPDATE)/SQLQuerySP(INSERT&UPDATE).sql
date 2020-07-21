@@ -1,5 +1,6 @@
---ログインIDが存在したらUPDATE、存在しない場合INSERTするSP作成
+--ログインIDが存在したらUPDATE(更新日付のみ）、存在しない場合INSERTするSP作成
 CREATE PROCEDURE uspUserInsertOrUpdate
+	@ExecUser NVARCHAR(20),  --実行ユーザ
 	@LoginId NVARCHAR(50),
 	@Name NVARCHAR(50),
 	@BirthDay DATE,
@@ -17,12 +18,14 @@ BEGIN
 		(US.LoginId = SU.LoginId)
 	WHEN MATCHED THEN
 		UPDATE
-		SET
-			LoginId = SU.LoginId,
-			name = SU.name,
-			BirthDay = SU.BirthDay,
-			Gender = SU.Gender
+		SET UpdatedDate = GETDATE() --UPDATEの日時を出力
+		
 	WHEN NOT MATCHED THEN
 		INSERT (LoginId, Name, BirthDay, Gender)
-		VALUES (SU.LoginId, SU.Name, SU.BirthDay, SU.Gender);
+		VALUES (SU.LoginId, SU.Name, SU.BirthDay, SU.Gender)
+	OUTPUT
+		FORMAT(GETDATE(),'yyyy/MM/dd HH:mm:ss') AS Date,
+		@ExecUser AS ExecUser,
+		$action AS RESULT_STRING;
+
 END;
