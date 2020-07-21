@@ -1,4 +1,4 @@
---ログインIDが存在したらUPDATE、存在しない場合エラーメッセージを出力するSP作成
+--ログインIDが存在したらフェラーメッセージを出力、存在しない場合INSERTするSP作成
 CREATE PROCEDURE uspUserInsertOrError
 	@LoginId NVARCHAR(50),
 	@Name NVARCHAR(50),
@@ -7,15 +7,16 @@ CREATE PROCEDURE uspUserInsertOrError
 	@ErrorMessage NVARCHAR(100) OUT
 AS
 BEGIN
-	IF EXISTS (SELECT *FROM users WHERE LoginId = @LoginId)
-	BEGIN
-		SET @ErrorMessage = N'すでに存在するので登録できません';
-	END
+	IF EXISTS (SELECT * FROM users WHERE LoginId = @LoginId)
+		BEGIN
+			SET @ErrorMessage = N'すでに存在するので登録できません';
+		END
 	ELSE
-	BEGIN
-		INSERT INTO users
-			(LoginId, Name, BirthDay, Gender) 
-		VALUES 
-			(@LoginId, @Name, @BirthDay, @Gender);
-	END
+		BEGIN
+			INSERT INTO users
+				(LoginId, Name, BirthDay, Gender) 
+			VALUES 
+				(@LoginId, @Name, @BirthDay, @Gender);
+		END
+	END IF
 END;
